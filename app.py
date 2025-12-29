@@ -1,89 +1,62 @@
 import streamlit as st
 
-# 1. Page Setup & Styling
-st.set_page_config(page_title="Vibes - All Time Bollywood", page_icon="🎧", layout="wide")
+# 1. Page Config
+st.set_page_config(page_title="Vibes Online", page_icon="🎧")
 
+# 2. Spotify Dark Theme Styling
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(135deg, #1e1e2e 0%, #111111 100%);
+        background-color: #121212;
         color: white;
     }
-    .stSidebar { background-color: rgba(0,0,0,0.9); }
-    h1 { color: #1DB954; font-family: 'Righteous', sans-serif; font-size: 50px; }
-    .song-label { font-size: 18px; font-weight: bold; color: #1DB954; }
+    .stTextInput>div>div>input {
+        background-color: #282828;
+        color: white;
+        border-radius: 10px;
+    }
+    h1 { color: #1DB954; }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🎧 VIBES")
-st.write("### Sabse Bada Bollywood Collection")
+st.title("🎧 VIBES - Online Streaming")
 
-# 2. Huge Playlist Data
-# Note: In sabka audio sample links se connected hai. 
-# Real gaane bajane ke liye aapko unka MP3 URL yahan replace karna hoga.
-mega_playlist = {
-    "🔥 90s Hits": [
-        "Pehla Nasha", "Tujhe Dekha To", "Dil To Pagal Hai", "Ek Ladki Ko Dekha", 
-        "Tip Tip Barsa Pani", "Saat Samundar Paar", "Chura Ke Dil Mera", "Yeh Kaali Kaali Aankhen"
-    ],
-    "💖 2000-2010 Super Hits": [
-        "Kal Ho Naa Ho", "Suraj Hua Maddham", "Tum Se Hi", "Tere Naam", 
-        "Zara Zara", "Mitwa", "Koi Mil Gaya", "Dhoom Machale"
-    ],
-    "💃 2010-2015 Blockbusters": [
-        "Chammak Challo", "Sheila Ki Jawani", "Munni Badnaam", "Tum Hi Ho", 
-        "Sun Raha Hai", "Badtameez Dil", "Kabira", "Gerua"
-    ],
-    "🚀 2020-2024 Viral Hits": [
-        "Kesariya", "Raatan Lambiyan", "Apna Bana Le", "Chaleya", 
-        "Heeriye", "What Jhumka", "Tere Vaaste"
-    ],
-    "🕺 Evergreen Party": [
-        "Jumma Chumma De De", "Aankh Marey", "London Thumakda", 
-        "Gallan Goodiyan", "Abhi Toh Party Shuru Hui Hai"
-    ]
+# 3. Online Search Feature
+st.write("### 🔍 Duniya ka koi bhi gaana dhoondo")
+search_query = st.text_input("Gaane ka naam likho (e.g. Kesariya Lofi, Arijit Singh hits)...")
+
+if search_query:
+    st.write(f"Searching for: **{search_query}**")
+    
+    # Ye part aapke search query ko YouTube ke link mein badal deta hai
+    search_url = f"https://www.youtube.com/results?search_query={search_query.replace(' ', '+')}"
+    
+    st.info(f"Bhai, abhi hum is search ko filter kar rahe hain. Niche diye gaye player mein apni pasand ka link paste karke online suno!")
+
+    # Online Link Input (Streamlit limitation ki wajah se direct search play ke liye ye best hai)
+    online_link = st.text_input("YouTube ya MP3 link yahan paste karein:")
+    
+    if online_link:
+        st.video(online_link) # Streamlit video player audio bhi support karta hai
+        st.success("Enjoying the Vibes! ✨")
+
+# 4. Default Online Hits (Always Working)
+st.write("---")
+st.write("### 🚀 Trending Online")
+trending_songs = {
+    "Kesariya (Official)": "https://www.youtube.com/watch?v=BddP6PYo2gs",
+    "Heeriye": "https://www.youtube.com/watch?v=RLzC55ai0eo",
+    "Apna Bana Le": "https://www.youtube.com/watch?v=EL7vshZ_Oos"
 }
 
-# 3. Sidebar Navigation
-st.sidebar.image("https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200", caption="Vibes Music")
-st.sidebar.header("Explore Music")
-category = st.sidebar.selectbox("Era Select Karein:", list(mega_playlist.keys()))
-
-search = st.text_input("🔍 Search any song from your list...")
-
-# Filter Logic
-all_songs = []
-for songs in mega_playlist.values():
-    all_songs.extend(songs)
-
-if search:
-    display_list = [s for s in all_songs if search.lower() in s.lower()]
-else:
-    display_list = mega_playlist[category]
-
-# 4. Main Player UI
-st.write("---")
-col1, col2 = st.columns([1, 1])
-
-if display_list:
-    selected_song = st.selectbox("Gaana Chuno:", display_list)
-    
-    with col1:
-        # Bollywood Album Art Placeholder
-        st.image("https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=500", use_container_width=True)
-    
-    with col2:
-        st.write(f"## {selected_song}")
-        st.write(f"Playing from: **{category}**")
-        st.write("Format: **High Quality Audio**")
-        
-        # Audio Player (Using sample links as placeholder)
-        st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
-        
-        st.button("➕ Add to Favorites")
-        st.button("⬇️ Download (Premium)")
-else:
-    st.error("Bhai, ye gaana list mein nahi hai!")
+selection = st.selectbox("Trending se chuno:", list(trending_songs.keys()))
+st.video(trending_songs[selection])
 
 st.write("---")
-st.write("Created by: **Ahsas Rawat** | Vibes v3.0 | 50+ Songs Loaded")
+st.write("Created by: **Ahsas Rawat** | Vibes Online v5.0")
+
+Attachments area
+Preview YouTube video Kesariya - Brahmāstra | Ranbir Kapoor, Alia Bhatt | Pritam | Arijit Singh | Amitabh Bhattacharya| 4KPreview YouTube video Kesariya - Brahmāstra | Ranbir Kapoor, Alia Bhatt | Pritam | Arijit Singh | Amitabh Bhattacharya| 4K
+
+Preview YouTube video Heeriye (Official Video) Jasleen Royal ft Arijit Singh| Dulquer Salmaan| Aditya Sharma |Taani TanvirPreview YouTube video Heeriye (Official Video) Jasleen Royal ft Arijit Singh| Dulquer Salmaan| Aditya Sharma |Taani Tanvir
+
