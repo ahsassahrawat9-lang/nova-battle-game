@@ -1,82 +1,69 @@
 import streamlit as st
-import random
 
-# 1. Page Configuration
-st.set_page_config(page_title="Nova Anime Battle", layout="wide")
+# 1. Page Setup
+st.set_page_config(page_title="Vibes - Music for You", page_icon="🎧")
 
-# 2. Complete Visual Styling (Background & Text)
+# 2. Spotify-inspired Dark Theme
 st.markdown("""
     <style>
     .stApp {
-        background: url("https://wallpaperaccess.com/full/5501.jpg");
-        background-size: cover;
-        background-position: center;
+        background: linear-gradient(to bottom, #1db954, #121212);
         color: white;
     }
-    [data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.8) !important;
+    .stTextInput>div>div>input {
+        background-color: #282828;
+        color: white;
+        border-radius: 20px;
     }
-    .st-emotion-cache-10trblm { color: gold !important; }
+    h1 {
+        font-family: 'Arial Black';
+        text-shadow: 2px 2px #000;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Sidebar Setup (Character & Inventory)
-st.sidebar.image("https://www.pngarts.com/files/3/Goku-Transparent-Background-PNG.png", width=200)
-st.sidebar.title("👤 Character: Goku (Super Saiyan)")
+# 3. App Header
+st.title("🎧 VIBES")
+st.subheader("Your Playlist, Your Rules")
 
-# Game State Logic
-if 'health' not in st.session_state:
-    st.session_state.health = 100
-    st.session_state.kills = 0
+# 4. Search Bar
+search_query = st.text_input("🔍 Search for a song or artist (e.g., Arijit Singh, Sidhu Moose Wala)...")
 
-st.sidebar.write("---")
-st.sidebar.subheader("🎯 Stats")
-st.sidebar.metric("❤️ HP", f"{st.session_state.health}%")
-st.sidebar.metric("💀 Kills", st.session_state.kills)
+# 5. Music Data (Aap yahan aur links add kar sakte hain)
+# Note: In links ko aap baad mein badal bhi sakte hain
+songs = {
+    "Vibe Check (Lofi)": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "Night Drive": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "Summer High": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+    "Soulmate": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3"
+}
 
-st.sidebar.write("---")
-weapon = st.sidebar.selectbox("🔫 Choose Your Weapon:", ["Blue Flame Draco AK47", "MP40 Cobra", "AWM Duke Swallowtail"])
+# 6. Sidebar & Player Logic
+st.sidebar.title("🎵 Vibes Library")
+if search_query:
+    st.write(f"Showing results for: **{search_query}**")
+    # Yahan hum search results dikha rahe hain
+    filtered_songs = [s for s in songs.keys() if search_query.lower() in s.lower()]
+else:
+    filtered_songs = list(songs.keys())
 
-# 4. Main Game Screen
-st.title("🏯 Nova Anime x Free Fire Battle")
-st.write("### Mission: Bermuda Under Attack!")
-
-# Battle Area Image
-st.image("https://i.ytimg.com/vi/W_zF865EwEY/maxresdefault.jpg", caption="Bermuda Warzone", use_container_width=True)
-
-st.write("---")
-
-# 5. Combat System
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.subheader("📍 Battle Zone")
-    location = st.selectbox("Land/Attack at:", ["Clock Tower", "Factory", "Pochinok", "Bimasakti Strip"])
+if filtered_songs:
+    selected_song = st.sidebar.radio("Select to Play:", filtered_songs)
     
-    if st.button(f"🔥 ATTACK WITH {weapon.split()[0]}!"):
-        enemy_pos = random.choice(["Clock Tower", "Factory", "Pochinok", "Bimasakti Strip"])
-        
-        if location == enemy_pos:
-            st.balloons()
-            st.success(f"💥 HEADSHOT! You eliminated the enemy at {location} using {weapon}!")
-            st.session_state.kills += 1
-        else:
-            st.error(f"❌ Missed! The enemy was hiding at {enemy_pos}. They hit you back!")
-            st.session_state.health -= 25
-
-with col2:
-    st.subheader("🛡️ Battle Log")
-    if st.session_state.health <= 0:
-        st.error("💀 ELIMINATED! Your soul has left the battle.")
-        if st.button("REDEPLOY (Respawn)"):
-            st.session_state.health = 100
-            st.session_state.kills = 0
-            st.rerun()
-    else:
-        st.info(f"Keep fighting, {weapon.split()[0]} is ready!")
+    # Player Interface
+    st.write("---")
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.image("https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500", caption="Now Playing", use_container_width=True)
+    
+    with col2:
+        st.write(f"## {selected_song}")
+        st.write("Artist: **Vibes Original**")
+        st.audio(songs[selected_song])
+        st.success("Gaana baj raha hai... Enjoy the vibes! ✨")
+else:
+    st.warning("Oops! Ye gaana abhi library mein nahi hai.")
 
 st.write("---")
-st.write("Developed by: **Ahsas Rawat** | Engine: **Nova-Anime-v3**")
-
-
-      
+st.write("Created by: **Ahsas Sahrawat** | 🎵 Powered by Vibes Engine")
